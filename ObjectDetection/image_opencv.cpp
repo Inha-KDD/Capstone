@@ -902,11 +902,11 @@ extern "C" void draw_detections_cv_v3(mat_cv* mat, detection *dets, int num, flo
                         sprintf(buff, " (%2.0f%%)", dets[i].prob[j] * 100);
                         strcat(labelstr, buff);
 /***********************************************************************************
-				insert here!
-				    hyd
-		keyword: hyd, rollin, apache, server, kdd
+				set Boundary & detect Person
 ***********************************************************************************/
-                        box b = dets[i].bbox;
+                        //Bbox 값 세팅
+			box b = dets[i].bbox;
+			    
                         if (std::isnan(b.w) || std::isinf(b.w)) b.w = 0.5;
                         if (std::isnan(b.h) || std::isinf(b.h)) b.h = 0.5;
                         if (std::isnan(b.x) || std::isinf(b.x)) b.x = 0.5;
@@ -920,6 +920,8 @@ extern "C" void draw_detections_cv_v3(mat_cv* mat, detection *dets, int num, flo
                         int right = (b.x + b.w / 2.)*show_img->cols;
                         int top = (b.y - b.h / 2.)*show_img->rows;
                         int bot = (b.y + b.h / 2.)*show_img->rows;
+			    
+			//인식 객체의 중앙 값 계산
 			int center_x = 0;
 			int center_y = 0;
                         if (left < 0) left = 0;
@@ -928,17 +930,16 @@ extern "C" void draw_detections_cv_v3(mat_cv* mat, detection *dets, int num, flo
                         if (bot > show_img->rows - 1) bot = show_img->rows - 1;
 			center_x = ((float)left+float(right))/2;
 			center_y = ((float)top + (float)bot)/2;
-
+			
+			//인식된 객체가 사람인 경우
                         if (!strcmp(names[j],"person")){
-
+			    //좌석 설정
                             if (center_x > 230) printf("seat_1\t");
                             else printf("seat_2\t");
                             //printf("%s: %.0f%% ", names[j], dets[i].prob[j] * 100);
                             printf("\tcenter_point: (%4.0f, %4.0f)\n",(float)center_x, float(center_y));
                             }
-/**********************************************************************************
-				end code
-**********************************************************************************/
+
 			//text output
                         //printf("%s: %.0f%% ", names[j], dets[i].prob[j] * 100);
                         if (dets[i].track_id) printf("(track = %d, sim = %f) ", dets[i].track_id, dets[i].sim);
@@ -951,6 +952,7 @@ extern "C" void draw_detections_cv_v3(mat_cv* mat, detection *dets, int num, flo
                     }
                 }
             }
+	    // 객체가 인식된 
             if (class_id >= 0) {
                 int width = std::max(1.0f, show_img->rows * .002f);
 
