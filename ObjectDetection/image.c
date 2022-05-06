@@ -207,6 +207,7 @@ void draw_box_width_bw(image a, int x1, int y1, int x2, int y2, int w, float bri
     }
 }
 
+//draw Bbox
 void draw_box(image a, int x1, int y1, int x2, int y2, float r, float g, float b)
 {
     //normalize_image(a);
